@@ -26,35 +26,26 @@ namespace StreamAudioClient
     /// </summary>
     public partial class MainWindow : Window
     {
-        public int port = 11001; //умолчание
-        public string adres = "127.0.0.1"; //умолчание
+        //public int port = 11001; //умолчание
+        //public string adres = "127.0.0.1"; //умолчание
         WaveOut waveOut;
 
         WaveFormat waveFormat;
 
         IPEndPoint groupEP = new IPEndPoint(IPAddress.Any, 11001);
 
-        //Socket udpsock = new Socket(SocketType.Dgram, ProtocolType.Udp);
         public MainWindow()
         {
             InitializeComponent();
 
             waveOut = new WaveOut();
             waveFormat = WaveFormat.CreateIeeeFloatWaveFormat(44100, 2);
-            //waveFormat = WaveFormat.CreateIeeeFloatWaveFormat()
-
-
-
-            //NetworkStream ns = listener.GetStream();
-
-
         }
 
-        public void ConnectToServer()
+        public void ConnectToServer(string address, string port)
         {
-            //TcpListener l = new TcpListener(IPAddress.Parse(adres), port); //и на нем у нас висит сервер
-            
-            TcpClient client = new TcpClient(adres, port); //IP адрес сервера и порт на котором он висит
+
+            TcpClient client = new TcpClient(address, Int32.Parse(port)); //IP адрес сервера и порт на котором он висит
             NetworkStream NWS = client.GetStream();
             BinaryReader R = new BinaryReader(NWS); //поток для принятия данных
 
@@ -62,53 +53,11 @@ namespace StreamAudioClient
 
             waveOut.Init(rawSource);
             waveOut.Play();
-            //BinaryWriter W = new BinaryWriter(NWS); //поток для отправки данных
-
-
         }
-
-        /*public void InitilizeElements()
-        {
-            
-        }*/
 
         private void BtnStart_Click(object sender, RoutedEventArgs e)
         {
-            ConnectToServer();
+            ConnectToServer(IpAddress.Text, Port.Text);
         }
-
-        /*private void StartListener()
-        {
-            bool done = false;
-
-            
-
-            try
-            {
-                Console.WriteLine("Waiting for broadcast");
-                while (!done)
-                {
-                    Console.WriteLine("Waiting for broadcast");
-                    //byte[] bytes = listener.
-                    //stream.WriteAsync(bytes, 0, bytes.Length);
-                    
-                    
-                    //waveOut.Play();
-
-                    //Console.WriteLine("Received broadcast from {0} :\n {1}\n", groupEP.ToString(), bytes.Length);
-                }
-
-
-
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.ToString());
-            }
-            finally
-            {
-                listener.Close();
-            }
-        }*/
     }
 }

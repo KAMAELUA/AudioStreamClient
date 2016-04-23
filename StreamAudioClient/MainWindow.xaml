@@ -5,10 +5,29 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:StreamAudioClient"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
-    <Grid>
-        <TextBox x:Name="FieldIpAddress" HorizontalAlignment="Left" Height="23" Margin="68,140,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
-        <Button x:Name="BtnStart" Content="Button" HorizontalAlignment="Left" Margin="85,202,0,0" VerticalAlignment="Top" Width="75" Click="BtnStart_Click"/>
+        Title="MainWindow" Height="200" Width="180">
+    <StackPanel Margin="10,10">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"></ColumnDefinition>
+                <ColumnDefinition Width="auto"></ColumnDefinition>
 
-    </Grid>
+            </Grid.ColumnDefinitions>
+
+            <Label Grid.Row="0" Grid.Column="0" Content="IP Address: "/>
+            <Label Grid.Row="1" Grid.Column="0" Content="Port: "/>
+
+            <TextBox x:Name="IpAddress" Grid.Row="0" Grid.Column="1" Text="192.168.0.101" />
+            <TextBox x:Name="Port" Grid.Row="1" Grid.Column="1" Text="11001" />
+
+            <Button x:Name="BtnStart" Grid.Row="2" Grid.ColumnSpan="2" Content="Start" Click="BtnStart_Click" />
+
+        </Grid>
+    </StackPanel>
 </Window>
