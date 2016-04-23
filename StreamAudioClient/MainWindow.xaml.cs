@@ -26,7 +26,8 @@ namespace StreamAudioClient
     /// </summary>
     public partial class MainWindow : Window
     {
-
+        public int port = 11001; //умолчание
+        public string adres = "127.0.0.1"; //умолчание
         Thread listnerThread;
         WaveOut waveOut;
         Stream stream;
@@ -36,23 +37,36 @@ namespace StreamAudioClient
         TcpClient listener;
         IPEndPoint groupEP = new IPEndPoint(IPAddress.Any, 11001);
 
-        Socket udpsock = new Socket(SocketType.Dgram, ProtocolType.Udp);
+        //Socket udpsock = new Socket(SocketType.Dgram, ProtocolType.Udp);
         public MainWindow()
         {
-            listener = new TcpClient(groupEP);
-            waveOut = new WaveOut(WaveCallbackInfo.FunctionCallback());
-            
             InitializeComponent();
-            //listnerThread = new Thread(StartListener);
-            waveFormat = WaveFormat.CreateIeeeFloatWaveFormat(44100, 2);
-            stream = new MemoryStream();
-            
 
-            NetworkStream ns = listener.GetStream();
-            var rawSource = new RawSourceWaveStream(ns, waveFormat);
+            waveOut = new WaveOut(WaveCallbackInfo.FunctionCallback());
+            waveFormat = WaveFormat.CreateIeeeFloatWaveFormat(44100, 2);
+
+
+
+            //NetworkStream ns = listener.GetStream();
+
+
+        }
+
+        public void ConnectToServer()
+        {
+            //TcpListener l = new TcpListener(IPAddress.Parse(adres), port); //и на нем у нас висит сервер
+            
+            TcpClient client = new TcpClient(adres, port); //IP адрес сервера и порт на котором он висит
+            NetworkStream NWS = client.GetStream();
+            BinaryReader R = new BinaryReader(NWS); //поток для принятия данных
+
+            var rawSource = new RawSourceWaveStream(NWS, waveFormat);
 
             waveOut.Init(rawSource);
             waveOut.Play();
+            //BinaryWriter W = new BinaryWriter(NWS); //поток для отправки данных
+
+
         }
 
         public void InitilizeElements()
@@ -62,10 +76,11 @@ namespace StreamAudioClient
 
         private void BtnStart_Click(object sender, RoutedEventArgs e)
         {
-            listnerThread.Start();
+            ConnectToServer();
+            //listnerThread.Start();
         }
 
-        private async void StartListener()
+        private void StartListener()
         {
             bool done = false;
 
