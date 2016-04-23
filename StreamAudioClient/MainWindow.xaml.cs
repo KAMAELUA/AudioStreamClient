@@ -28,13 +28,10 @@ namespace StreamAudioClient
     {
         public int port = 11001; //умолчание
         public string adres = "127.0.0.1"; //умолчание
-        Thread listnerThread;
         WaveOut waveOut;
-        Stream stream;
-        StreamWriter sw;
+
         WaveFormat waveFormat;
 
-        TcpClient listener;
         IPEndPoint groupEP = new IPEndPoint(IPAddress.Any, 11001);
 
         //Socket udpsock = new Socket(SocketType.Dgram, ProtocolType.Udp);
@@ -42,8 +39,9 @@ namespace StreamAudioClient
         {
             InitializeComponent();
 
-            waveOut = new WaveOut(WaveCallbackInfo.FunctionCallback());
+            waveOut = new WaveOut();
             waveFormat = WaveFormat.CreateIeeeFloatWaveFormat(44100, 2);
+            //waveFormat = WaveFormat.CreateIeeeFloatWaveFormat()
 
 
 
@@ -69,18 +67,17 @@ namespace StreamAudioClient
 
         }
 
-        public void InitilizeElements()
+        /*public void InitilizeElements()
         {
             
-        }
+        }*/
 
         private void BtnStart_Click(object sender, RoutedEventArgs e)
         {
             ConnectToServer();
-            //listnerThread.Start();
         }
 
-        private void StartListener()
+        /*private void StartListener()
         {
             bool done = false;
 
@@ -112,6 +109,6 @@ namespace StreamAudioClient
             {
                 listener.Close();
             }
-        }
+        }*/
     }
 }
