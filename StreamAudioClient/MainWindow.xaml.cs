@@ -1,5 +1,6 @@
 ﻿using NAudio.Dsp;
 using NAudio.Wave;
+using NAudio.Wave.SampleProviders;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -51,34 +52,12 @@ namespace StreamAudioClient
         public void ConnectToServer()
         {
             TcpClient client = new TcpClient(FieldIpAddress.Text, port); //IP адрес сервера и порт на котором он висит
-            /*NetworkStream NWS = client.GetStream();
-            NWS.
-            BinaryReader R = new BinaryReader(NWS); //поток для принятия данных
-            var rawSource = new RawSourceWaveStream(NWS, waveFormat);
-            
-            waveOut.Init(rawSource);
-            
-            waveOut.Play();*/
-            stream = new MemoryStream();
-            sw = new StreamWriter(stream);
-            bw = new BinaryWriter(stream);
-            
-            CustomStreamReader csw = new CustomStreamReader(client.GetStream());
-            //csw.DataAvalaible += StreamDataAvalaible;
-
-            SampleAggregator sa = new SampleAggregator();
-            
 
             var rawSource = new RawSourceWaveStream(client.GetStream(), waveFormat);
-            waveOut.Init(rawSource);
+            var sampleProvider = rawSource.ToSampleProvider();
+            waveOut.Init(sampleProvider);
             
             waveOut.Play();
-        }
-
-        private void StreamDataAvalaible(StreamDataAvalaible e)
-        {
-            bw.Write(e.data);
-            bw.Flush();
         }
 
         private void BtnStart_Click(object sender, RoutedEventArgs e)
@@ -87,6 +66,11 @@ namespace StreamAudioClient
         }
 
         private void FieldIpAddress_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+        }
+
+        private void CreateWaveOut()
         {
 
         }
