@@ -30,7 +30,9 @@ namespace StreamAudioClient
         public int port = 11001; //умолчание
         //public string adres = "192.168.0.102"; //умолчание
         WaveOut waveOut;
-
+        StreamWriter sw;
+        Stream stream;
+        BinaryWriter bw;
         WaveFormat waveFormat;
         private MemoryStream audioMempryStream;
 
@@ -42,7 +44,7 @@ namespace StreamAudioClient
 
             waveOut = new WaveOut();
             waveFormat = WaveFormat.CreateIeeeFloatWaveFormat(44100, 2);
-            //waveFormat = WaveFormat.CreateIeeeFloatWaveFormat()
+            
             
         }
 
@@ -57,26 +59,26 @@ namespace StreamAudioClient
             waveOut.Init(rawSource);
             
             waveOut.Play();*/
-            audioMempryStream = new MemoryStream();
+            stream = new MemoryStream();
+            sw = new StreamWriter(stream);
+            bw = new BinaryWriter(stream);
+            
             CustomStreamReader csw = new CustomStreamReader(client.GetStream());
-            csw.DataAvalaible += StreamDataAvalaible;
+            //csw.DataAvalaible += StreamDataAvalaible;
 
+            SampleAggregator sa = new SampleAggregator();
+            
 
-
-            var rawSource = new RawSourceWaveStream(audioMempryStream, waveFormat);
+            var rawSource = new RawSourceWaveStream(client.GetStream(), waveFormat);
             waveOut.Init(rawSource);
-
+            
             waveOut.Play();
         }
 
         private void StreamDataAvalaible(StreamDataAvalaible e)
         {
-            audioMempryStream.Write(e.data, 0, e.dataLength);
-        }
-
-        public void CloneStream()
-        {
-
+            bw.Write(e.data);
+            bw.Flush();
         }
 
         private void BtnStart_Click(object sender, RoutedEventArgs e)

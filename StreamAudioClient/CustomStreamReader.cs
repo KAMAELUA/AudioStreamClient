@@ -16,7 +16,7 @@ namespace StreamAudioClient
         public delegate void DataAvalaibleEvnt(StreamDataAvalaible e);
         Thread updaterThread;
         BinaryReader sr;
-        byte[] buffer = new byte[1024];
+        byte[] buffer = new byte[4096];
 
         public CustomStreamReader(NetworkStream stream)
         {
@@ -42,12 +42,12 @@ namespace StreamAudioClient
             {
                 if (stream.DataAvailable)
                     {
-                    int byteCount = sr.Read(buffer, 0, 1024);
+                    int byteCount = sr.Read(buffer, 0, 4096);
                     if (byteCount > 0)
                     {
                         byte[] tmpArray = new byte[byteCount];
                         Array.Copy(buffer, tmpArray, byteCount);
-                        DataAvalaible(new StreamDataAvalaible() { data = tmpArray, dataLength = byteCount });
+                        DataAvalaible?.Invoke(new StreamDataAvalaible() { data = tmpArray, dataLength = byteCount });
                     }
                 }
             }
