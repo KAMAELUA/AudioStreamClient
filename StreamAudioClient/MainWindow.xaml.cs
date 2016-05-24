@@ -57,7 +57,7 @@ namespace StreamAudioClient
             waveOut.Init(rawSource);
             
             waveOut.Play();
-            SampleAgg
+            
         }
 
         private void BtnStart_Click(object sender, RoutedEventArgs e)
