@@ -3,6 +3,7 @@ using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -29,15 +30,17 @@ namespace StreamAudioClient
     public partial class MainWindow : Window
     {
         public int port = 11001; //умолчание
-        //public string adres = "192.168.0.102"; //умолчание
-        WaveOut waveOut;
-        StreamWriter sw;
-        Stream stream;
-        BinaryWriter bw;
-        WaveFormat waveFormat;
-        private MemoryStream audioMempryStream;
 
-        //IPEndPoint groupEP = new IPEndPoint(IPAddress.Any, 11001);
+        WaveOut waveOut;
+        WaveFormat waveFormat;
+        MeteringSampleProvider metering;
+
+        [DefaultValue(-60.0)]
+        public float MinDb { get; set; }
+
+        [DefaultValue(18.0)]
+        public float MaxDb { get; set; }
+
 
         public MainWindow()
         {
@@ -45,19 +48,31 @@ namespace StreamAudioClient
 
             waveOut = new WaveOut();
             waveFormat = WaveFormat.CreateIeeeFloatWaveFormat(44100, 2);
-            
-            
+
+            MinDb = -60;
+            MaxDb = 18;
+
+
         }
 
         public void ConnectToServer()
         {
             TcpClient client = new TcpClient(FieldIpAddress.Text, port); //IP адрес сервера и порт на котором он висит
-
+            
             var rawSource = new RawSourceWaveStream(client.GetStream(), waveFormat);
             var sampleProvider = rawSource.ToSampleProvider();
-            waveOut.Init(sampleProvider);
             
+            
+            metering = new MeteringSampleProvider(sampleProvider);
+            metering.StreamVolume += realVolume;
+            waveOut.Init(metering);
             waveOut.Play();
+        }
+
+        private void realVolume(object sender, StreamVolumeEventArgs e)
+        {
+            leftChannelBar.Value = 100 * CountBbPercent(e.MaxSampleValues[0]);
+            rightChannelBar.Value = 100 * CountBbPercent(e.MaxSampleValues[1]);
         }
 
         private void BtnStart_Click(object sender, RoutedEventArgs e)
@@ -65,14 +80,16 @@ namespace StreamAudioClient
             ConnectToServer();
         }
 
-        private void FieldIpAddress_TextChanged(object sender, TextChangedEventArgs e)
+        private double CountBbPercent(float Amplitude)
         {
+            double db = 20 * Math.Log10(Amplitude);
 
-        }
+            if (db < MinDb)
+                db = MinDb;
+            if (db > MaxDb)
+                db = MaxDb;
 
-        private void CreateWaveOut()
-        {
-
-        }
+            return (db - MinDb) / (MaxDb - MinDb);
+        } 
     }
 }
