@@ -6,15 +6,36 @@
         xmlns:local="clr-namespace:StreamAudioClient"
         mc:Ignorable="d"
         Title="MainWindow" Height="300" Width="230">
+    <Window.DataContext>
+        <local:MainWindowViewModel/>
+    </Window.DataContext>
     <StackPanel>
         <StackPanel Orientation="Horizontal">
             <StackPanel>
-                <TextBox x:Name="FieldIpAddress" Text="192.168.0.102" Margin="10, 10, 0, 0" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-                <Button x:Name="BtnStart" Content="Connect" Margin="10, 10, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Click="BtnStart_Click"/>
+                <TextBox x:Name="FieldIpAddress" Margin="10, 10, 0, 0" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Text="{Binding IpAddress, Mode=TwoWay}"/>
+                <Button x:Name="BtnStart" Content="Connect" Margin="10, 10, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Command="{Binding ConnectCommand, Mode=OneWay}"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="10,0,0,0" >
-                <ProgressBar x:Name="leftChannelBar" Margin="0, 10, 0, 0" Maximum="100" Minimum="0" Width="20" Height="150" Orientation="Vertical" />
-                <ProgressBar x:Name="rightChannelBar" Margin="10, 10, 0, 0" Maximum="100" Minimum="0" Width="20" Height="150" Orientation="Vertical" />
+                <ProgressBar x:Name="leftChannelBar" Margin="0, 10, 0, 0" Maximum="100" Minimum="0" Width="20" Height="150" Orientation="Vertical" Value="{Binding LeftChannelLoadValue, Mode=OneWay}" >
+                    <ProgressBar.Foreground>
+                        <LinearGradientBrush EndPoint="10,150" StartPoint="10,0" SpreadMethod="Repeat" MappingMode="Absolute">
+                            <LinearGradientBrush.Transform>
+                                <TransformGroup>
+                                    <ScaleTransform/>
+                                    <SkewTransform/>
+                                    <RotateTransform Angle="90"/>
+                                    <TranslateTransform/>
+                                </TransformGroup>
+                            </LinearGradientBrush.Transform>
+                            <GradientStop Color="#FF1DF027" Offset="0.992"/>
+                            <GradientStop Color="#FFFF0A0A" Offset="0.05"/>
+                            <GradientStop Color="#FF1DF027" Offset="0.41"/>
+                            <GradientStop Color="#FFBBDE42" Offset="0.247"/>
+                            <GradientStop Color="#FFBBDE42" Offset="0.142"/>
+                        </LinearGradientBrush>
+                    </ProgressBar.Foreground>
+                </ProgressBar>
+                <ProgressBar x:Name="rightChannelBar" Margin="10, 10, 0, 0" Maximum="100" Minimum="0" Width="20" Height="150" Orientation="Vertical" Value="{Binding RightChannelLoadValue}" />
             </StackPanel>
         </StackPanel>
         <Grid>
