@@ -5,10 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:StreamAudioClient"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow" Height="300" Width="230">
     <Grid>
-        <TextBox x:Name="FieldIpAddress" HorizontalAlignment="Left" Height="23" Margin="68,140,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
-        <Button x:Name="BtnStart" Content="Button" HorizontalAlignment="Left" Margin="85,202,0,0" VerticalAlignment="Top" Width="75" Click="BtnStart_Click"/>
+        <TextBox x:Name="FieldIpAddress" Text="192.168.0.102" HorizontalAlignment="Left" Height="23" Margin="68,140,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+        <Button x:Name="BtnStart" Content="Connect" HorizontalAlignment="Left" Margin="85,202,0,0" VerticalAlignment="Top" Width="75" Click="BtnStart_Click"/>
 
     </Grid>
 </Window>
