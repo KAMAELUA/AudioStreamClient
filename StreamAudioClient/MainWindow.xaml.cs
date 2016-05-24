@@ -32,6 +32,7 @@ namespace StreamAudioClient
         WaveOut waveOut;
 
         WaveFormat waveFormat;
+        private MemoryStream audioMempryStream;
 
         //IPEndPoint groupEP = new IPEndPoint(IPAddress.Any, 11001);
 
@@ -48,16 +49,34 @@ namespace StreamAudioClient
         public void ConnectToServer()
         {
             TcpClient client = new TcpClient(FieldIpAddress.Text, port); //IP адрес сервера и порт на котором он висит
-            NetworkStream NWS = client.GetStream();
+            /*NetworkStream NWS = client.GetStream();
+            NWS.
             BinaryReader R = new BinaryReader(NWS); //поток для принятия данных
-
             var rawSource = new RawSourceWaveStream(NWS, waveFormat);
-            //ISampleProvider s = new ISampleProvider();
             
             waveOut.Init(rawSource);
             
+            waveOut.Play();*/
+            audioMempryStream = new MemoryStream();
+            CustomStreamReader csw = new CustomStreamReader(client.GetStream());
+            csw.DataAvalaible += StreamDataAvalaible;
+
+
+
+            var rawSource = new RawSourceWaveStream(audioMempryStream, waveFormat);
+            waveOut.Init(rawSource);
+
             waveOut.Play();
-            SampleAgg
+        }
+
+        private void StreamDataAvalaible(StreamDataAvalaible e)
+        {
+            audioMempryStream.Write(e.data, 0, e.dataLength);
+        }
+
+        public void CloneStream()
+        {
+
         }
 
         private void BtnStart_Click(object sender, RoutedEventArgs e)
